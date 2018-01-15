@@ -15,6 +15,7 @@
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
 	    crossorigin="anonymous">
 	<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
+	<script async src="https://use.fontawesome.com/d8c77f8373.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,7 @@
 		</button>
 		<div class="collapse navbar-collapse float-right" id="navbarNavAltMarkup">
 			<div class="navbar-nav ">
-				<a class="nav-item nav-link" href="https://github.com/prashant-andani/ocr-javascript">Github</a>
+				<a class="nav-item nav-link" href="https://github.com/prashant-andani/ocr-javascript"><i class="fa fa-lg fa-github"></i> Github</a>
 			</div>
 		</div>
 	</nav>
@@ -38,7 +39,7 @@
 		<div class="row">
 			<div class="col-md-6" id="main">
 				<!-- Access to camera and recognize content -->
-				<div class="alert alert-primary">Recognize camera content
+				<div class="alert alert-primary"><i class="fa fa-camera fa-lg"></i> Recognize camera content
 					<button id="btnCameraAccess" class="float-right btn btn-danger btn-sm">Access Camera</button>
 				</div>
 				<video autoplay></video>
@@ -46,7 +47,8 @@
 			</div>
 			<div class="col-md-6">
 				<!-- Upload Image and recognize -->
-				<div class="alert alert-primary">Recognize image content</div>
+				<div class="alert alert-primary"><i class="fa fa-image fa-lg"></i> Recognize image content
+				</div>
 				<input id="uploadInput" type="file" />
 				<div id="imageContainer">
 					<img id="image" src="" alt="" style="max-height: 300px;" />
@@ -66,7 +68,7 @@
 	</div>
 
 	<nav class="navbar fixed-bottom navbar-light bg-dark">
-		<a class="" href="http://tesseract.projectnaptha.com/">Built using Tesseract</a>
+		<a class="" href="http://tesseract.projectnaptha.com/">Built with <i class="fa fa-heart fa-lg"></i> using Tesseract</a>
 	</nav>
 	<script>
 		(function () {

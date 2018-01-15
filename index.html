@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Computer Vision with Javascript</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		video,
+		img {
+			max-width: 100%;
+		}
+
+	</style>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
+	    crossorigin="anonymous">
+	<script src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+		<a class="navbar-brand" href="#">Computer Vision - OCR on Web</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
+		    aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse float-right" id="navbarNavAltMarkup">
+			<div class="navbar-nav ">
+				<a class="nav-item nav-link" href="#">Github</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+		</div>
+
+		<div class="row">
+			<div class="col-md-6" id="main">
+				<!-- Access to camera and recognize content -->
+				<div class="alert alert-primary">Recognize camera content
+					<button id="btnCameraAccess" class="float-right btn btn-danger btn-sm">Access Camera</button>
+				</div>
+				<video autoplay></video>
+				<button type="button" id="recgBtn" class="btn btn-primary btn-lg btn-block" style="display:none">Recognize</button>
+			</div>
+			<div class="col-md-6">
+				<!-- Upload Image and recognize -->
+				<div class="alert alert-primary">Recognize image content</div>
+				<input id="uploadInput" type="file" />
+				<div id="imageContainer">
+					<img id="image" src="" alt="" style="max-height: 300px;" />
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div id="result" class="jumbotron">
+					Scanned content will be displayed here
+				</div>
+				<div id="confidence" class="alert alert-success">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<nav class="navbar fixed-bottom navbar-light bg-dark">
+		<a class="" href="http://tesseract.projectnaptha.com/">Built using Tesseract</a>
+	</nav>
+	<script>
+		(function () {
+			'use strict';
+			var video = document.querySelector('video'),
+				canvas, img;
+			document.getElementById('uploadInput').addEventListener('change', readURL);
+			document.getElementById('recgBtn').addEventListener('click', takeSnapshot);
+			document.getElementById('btnCameraAccess').addEventListener('click', accessCamera);
+
+
+			/**
+			 *  generates a still frame image from the stream in the <video>
+			 *  appends the image to the <body>
+			 */
+			function accessCamera() {
+				if (navigator.mediaDevices) {
+					// access the web cam
+					navigator.mediaDevices.getUserMedia({
+							video: true
+						})
+						// permission granted:
+						.then(function (stream) {
+							video.src = window.URL.createObjectURL(stream);
+							document.getElementById('btnCameraAccess').style.display = "none";
+							document.getElementById('recgBtn').style.display = "block";
+
+						})
+						// permission denied:
+						.catch(function (error) {
+							console.log(error);
+							document.body.textContent = 'Could not access the camera. Error: ' + error.name;
+						});
+				}
+			}
+
+			function takeSnapshot() {
+
+				// use MediaDevices API
+				// docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+
+
+				video.style.display = "inline";
+				var context;
+				var width = video.offsetWidth,
+					height = video.offsetHeight;
+
+				canvas = canvas || document.createElement('canvas');
+				canvas.width = width;
+				canvas.height = height;
+
+				context = canvas.getContext('2d');
+				context.drawImage(video, 0, 0, width, height);
+
+				recognizeImage(canvas.toDataURL('image/png'));
+			}
+
+			function readURL() {
+				if (this.files && this.files[0]) {
+					let reader = new FileReader();
+					reader.onload = function (e) {
+						img = document.querySelector('img') || document.createElement('img');
+						img.setAttribute('src', e.target.result);
+						img.setAttribute('width', 500);
+						recognizeImage(e.target.result);
+					}
+
+					reader.readAsDataURL(this.files[0]);
+
+				}
+			}
+
+			function recognizeImage(image) {
+				Tesseract.recognize(image)
+					.progress(message => document.getElementById('result').innerHTML = "<h3>Recognizing..</h3>")
+					.then(function (result) {
+						document.getElementById('result').innerHTML = result.html;
+						document.getElementById('confidence').innerHTML = `Recognition confidence: ${result.confidence}`;
+					})
+					.catch(err => console.error(err))
+			}
+		})();
+
+	</script>
+</body>
+
+</html>
